@@ -1,0 +1,46 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "5001:5000"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DB_NAME=movies
+      - ALLOWED_ORIGINS=http://localhost:5173
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: movies
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build:
+      context: ./frontend
+    environment:
+      VITE_PORT: 5173
+      VITE_API_BASE_URL: http://localhost:5001
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
