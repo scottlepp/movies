@@ -1,8 +1,7 @@
 import { Container, Box, Typography, CardMedia, Button } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import config from '../config/config';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { fetch } from '../api/api';
 
 interface Movie {
@@ -24,9 +23,7 @@ const MovieDetail = () => {
   const navigate = useNavigate();
   
   useEffect(() => {
-    // @ts-ignore
-    const apiBaseUrl = config.apiBaseUrl;
-    fetch(`${apiBaseUrl}/movies/${id}`)
+    fetch(`movies/${id}`)
       .then(data => setMovie(data));
   }, [id]);
 

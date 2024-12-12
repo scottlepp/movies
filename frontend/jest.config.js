@@ -1,12 +1,18 @@
-/** @type {import('ts-jest').JestConfigWithTsJest} **/
+/* eslint-disable */
+
+import { pathsToModuleNameMapper } from "ts-jest";
+// import * as config from "./tsconfig.node.json" with { type: "json" };
+
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 export default {
-  // preset: 'ts-jest/presets/default-esm',
+  roots: ["<rootDir>"],
+  preset: "ts-jest",
   testEnvironment: "jsdom",
+  // modulePaths: [config.compilerOptions.baseUrl],
+  // moduleNameMapper: pathsToModuleNameMapper(config.compilerOptions.paths ?? {}),
   transform: {
-    "^.+.tsx?$": ["ts-jest",{}],
+    ".+\\.(css|less|sass|scss|png|jpg|gif|ttf|woff|woff2|svg)$":
+      "jest-transform-stub",
   },
-  setupFilesAfterEnv: ['./src/setupTests.ts'],
-  moduleNameMapper: {
-    "^react-router-dom$": "<rootDir>/node_modules/react-router-dom"
-  }
+  setupFilesAfterEnv: ['./src/setupTests.ts']
 };

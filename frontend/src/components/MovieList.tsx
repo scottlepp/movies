@@ -1,7 +1,6 @@
 import { Container, Typography, Card, CardMedia, CardContent, Grid2, Button } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import config from '../config/config';
 import { fetch } from '../api/api';
 
 type Movie = {
@@ -20,8 +19,7 @@ const MovieList = () => {
   const DEFAULT_IMAGE_URL = 'https://placehold.co/200x400'; // A simple placeholder image
 
   useEffect(() => {
-    const apiBaseUrl = config.apiBaseUrl;
-    fetch(`${apiBaseUrl}/movies`)
+    fetch(`movies`)
       .then(data => setMovies(data));
   }, []);
     

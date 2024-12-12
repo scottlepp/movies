@@ -104,7 +104,7 @@ func getMovies(w http.ResponseWriter, r *http.Request) {
 	}
 	tx := database.Find(&movies)
 	if tx != nil && tx.Error != nil {
-		log.Println("Error: ", tx.Error)
+		log.Println("Failed to Find movies: ", tx.Error)
 		http.Error(w, "Failed to fetch movies", http.StatusInternalServerError)
 		return
 	}
@@ -129,7 +129,7 @@ func getMovieByID(w http.ResponseWriter, r *http.Request) {
 
 	var movie Movie
 	if err := database.First(&movie, params["id"]).Error; err != nil {
-		log.Println("Error: ", err)
+		log.Println("Error: Failed to get Movie - ", err)
 		http.Error(w, "Movie not found", http.StatusNotFound)
 		return
 	}
@@ -148,21 +148,21 @@ func createMovie(w http.ResponseWriter, r *http.Request) {
 
 	var movie Movie
 	if err := json.NewDecoder(r.Body).Decode(&movie); err != nil {
-		log.Println("Error: ", err)
+		log.Println("Error: Failed to Decode Movie - ", err)
 		http.Error(w, "Invalid input", http.StatusBadRequest)
 		return
 	}
 
 	database, err := getDB(r.Context())
 	if err != nil {
-		log.Println("Failed to connect to database: ", err)
+		log.Println("Error: Failed to connect to database - ", err)
 		http.Error(w, "Failed to connect to database", http.StatusInternalServerError)
 		return
 	}
 
 	tx := database.Create(&movie)
 	if tx != nil && tx.Error != nil {
-		log.Println("Error: ", tx.Error)
+		log.Println("Error: Failed to Create movie - ", tx.Error)
 		http.Error(w, "Failed to create movie", http.StatusInternalServerError)
 		return
 	}
@@ -170,7 +170,7 @@ func createMovie(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(movie)
 	if err != nil {
-		log.Println("Error: ", err)
+		log.Println("Error: Encoder failed - ", err)
 		return
 	}
 }

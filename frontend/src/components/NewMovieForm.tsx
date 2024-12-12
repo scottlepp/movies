@@ -1,7 +1,6 @@
 import { Container, Typography, Box, TextField, Button } from '@mui/material';
 import { SetStateAction, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import config from '../config/config';
 import { fetch } from '../api/api';
 
 const NewMovieForm = () => {
@@ -16,8 +15,7 @@ const NewMovieForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const movie = { title, description, release_date: releaseDate, genre, director, poster_url: posterUrl };
-    const apiBaseUrl = config.apiBaseUrl;
-    const data = await fetch(`${apiBaseUrl}/movies`, {
+    const data = await fetch(`movies`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(movie),

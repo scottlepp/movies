@@ -1,27 +1,8 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import NewMovieForm from './NewMovieForm';
 import '@testing-library/jest-dom';
-
-// Mocking the global fetch function used in the component
-// global.fetch = jest.fn(() =>
-//   Promise.resolve({
-//     ok: true,
-//     status: 200,
-//     json: () => Promise.resolve({ message: 'Movie added successfully' }),
-//     headers: new Headers(),
-//     redirected: false,
-//     statusText: 'OK',
-//     type: 'basic',
-//     url: '',
-//     clone: jest.fn(),
-//     body: null,
-//     bodyUsed: false,
-//     arrayBuffer: jest.fn(),
-//     blob: jest.fn(),
-//     formData: jest.fn(),
-//     text: jest.fn(),
-//   } as Response)
-// );
+import { MemoryRouter } from 'react-router-dom';
+import { fetch } from '../api/api';
 
 jest.mock('../api/api', () => ({
   fetch: jest.fn(() => Promise.resolve(
@@ -31,7 +12,9 @@ jest.mock('../api/api', () => ({
 
 describe('NewMovieForm', () => {
     beforeEach(() => {
-      render(<NewMovieForm />);
+    render(<MemoryRouter>
+              <NewMovieForm />
+          </MemoryRouter>);
     });
   
     it('renders the form with input fields', () => {
@@ -71,8 +54,8 @@ describe('NewMovieForm', () => {
       fireEvent.click(screen.getByRole('button', { name: /Add Movie/ }));
   
       // Wait for the fetch to be called and then check if it was called with the correct data
-      await waitFor(() => expect(global.fetch).toHaveBeenCalledWith(
-        'http://localhost:5000/movies',
+      await waitFor(() => expect(fetch).toHaveBeenCalledWith(
+        'movies',
         expect.objectContaining({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
