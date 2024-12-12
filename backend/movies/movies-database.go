@@ -12,9 +12,18 @@ import (
 
 var db *gorm.DB
 
-func initDB(ctx context.Context) error {
+func getDB(ctx context.Context) (*gorm.DB, error) {
+	if db == nil {
+		return initDB(ctx)
+	}
+	return db, nil
+}
+
+func initDB(ctx context.Context) (*gorm.DB, error) {
 	_, span := tracer.Start(ctx, "initDB")
 	defer span.End()
+
+	log.Println("Connecting to Database")
 
 	host := os.Getenv("DB_HOST")
 	port := os.Getenv("DB_PORT")
@@ -26,9 +35,15 @@ func initDB(ctx context.Context) error {
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Failed to connect to the database: ", err)
-		return err
+		return nil, err
 	}
 
-	db.AutoMigrate(&Movie{})
-	return nil
+	log.Println("connected to Database")
+
+	err = db.AutoMigrate(&Movie{})
+	if err != nil {
+		log.Fatal("Failed to auto migrate: ", err)
+		return nil, err
+	}
+	return db, nil
 }
